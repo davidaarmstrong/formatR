@@ -39,7 +39,7 @@
 #' @export
 #' @example inst/examples/tidy.source.R
 tidy_source = function(
-  source = 'clipboard', comment = getOption('formatR.comment', TRUE),
+  source = 'clipboard', only.comment=TRUE, comment = getOption('formatR.comment', TRUE),
   blank = getOption('formatR.blank', TRUE),
   arrow = getOption('formatR.arrow', FALSE),
   brace.newline = getOption('formatR.brace.newline', FALSE),
@@ -65,14 +65,25 @@ tidy_source = function(
     n2 = attr(regexpr('\n*$', one), 'match.length')
   }
   on.exit(.env$line_break <- NULL, add = TRUE)
-  if (comment) text = mask_comments(text, width.cutoff, blank)
-  text.mask = tidy_block(text, width.cutoff, arrow && length(grep('=', text)))
-  text.tidy = if (comment) unmask_source(text.mask) else text.mask
-  text.tidy = reindent_lines(text.tidy, indent)
-  if (brace.newline) text.tidy = move_leftbrace(text.tidy)
-  # restore new lines in the beginning and end
-  if (blank) text.tidy = c(rep('', n1), text.tidy, rep('', n2))
-  if (output) cat(text.tidy, sep = '\n', ...)
+  if (only.comment) {
+    g1 <- grep("^##", text)
+    if(length(g1) > 0){
+      text.tidy <- text.mask <- text[-g1]
+    }
+    else{
+      text.tidy <- text.mask <- text
+    }
+  }
+  if(!only.comment){
+    if (comment) text = mask_comments(text, width.cutoff, blank)
+    text.mask = tidy_block(text, width.cutoff, arrow && length(grep('=', text)))
+    text.tidy = if (comment) unmask_source(text.mask) else text.mask
+    text.tidy = reindent_lines(text.tidy, indent)
+    if (brace.newline) text.tidy = move_leftbrace(text.tidy)
+    # restore new lines in the beginning and end
+    if (blank) text.tidy = c(rep('', n1), text.tidy, rep('', n2))
+    if (output) cat(text.tidy, sep = '\n', ...)
+  }
   invisible(list(text.tidy = text.tidy, text.mask = text.mask))
 }
 

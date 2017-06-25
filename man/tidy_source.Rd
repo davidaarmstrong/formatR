@@ -4,16 +4,18 @@
 \alias{tidy_source}
 \title{Reformat R code while preserving blank lines and comments}
 \usage{
-tidy_source(source = "clipboard", comment = getOption("formatR.comment", 
-    TRUE), blank = getOption("formatR.blank", TRUE), arrow = getOption("formatR.arrow", 
-    FALSE), brace.newline = getOption("formatR.brace.newline", FALSE), 
-    indent = getOption("formatR.indent", 4), output = TRUE, text = NULL, 
+tidy_source(source = "clipboard", only.comment=TRUE, comment = getOption("formatR.comment",
+    TRUE), blank = getOption("formatR.blank", TRUE), arrow = getOption("formatR.arrow",
+    FALSE), brace.newline = getOption("formatR.brace.newline", FALSE),
+    indent = getOption("formatR.indent", 4), output = TRUE, text = NULL,
     width.cutoff = getOption("width"), ...)
 }
 \arguments{
 \item{source}{a character string: location of the source code (default to be
 the clipboard; this means we can copy the code to clipboard and use
 \code{tidy_source()} without specifying the argument \code{source})}
+
+\item{only.comment}{if \code{TRUE}, removes only comments starting with \code{##} with \code{grep("^##", x)} and otherwise returns code as is. }
 
 \item{comment}{whether to keep comments (\code{TRUE} by default)}
 
